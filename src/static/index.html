@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cHackt</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"
+    ></script>
+  </head>
+  <body>
+    <div class="w-scree h-screen flex">
+      <nav class="w-1/5 bg-purple-900 h-screen p-4 pt-16" x-data="userList()">
+        <template x-for="user in userList">
+          <li x-text="user" class="text-white"></li>
+        </template>
+      </nav>
+      <main class="bg-gray-100 w-4/5 h-screen flex flex-col">
+        <header class="w-full">
+          <h1 class="font-bold text-center p-4 border-b bg-gray-200" x-data>
+            cHACKt - <span x-text="$store.appStore.activeConvo"></span>
+          </h1>
+        </header>
+        <section class="flex-grow flex flex-col p-4" x-data="activeConvo()">
+          <template x-for="message in activeConvoMessages">
+            <div 
+              :class="message.from == $store.appStore.currentUser ? 'text-right' : ''">
+              <p
+                x-text="message.content"
+                class="text-white inline-block w-auto rounded-lg p-4 mb-4"
+                :class="message.from == $store.appStore.currentUser ? 'bg-purple-500' : 'bg-gray-400'"
+              ></div>
+            </li>
+          </template>
+        </section>
+        <footer class="border-top border-gray-400" x-data="messageForm()">
+          <form class="p-4" x-on:submit.prevent="sendMessage">
+            <textarea
+              @keydown.enter="sendMessage($event)"
+              x-model="messageBody"
+              name="message"
+              id="message"
+              class="outline-purple-500 rounded-lg bg-white border border-1 border-gray-200 block w-full resize-none bg-transparent p-4 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+            >
+            </textarea>
+          </form>
+        </footer>
+      </main>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script src="/static/js/chatApp.js"></script>
+  </body>
+</html>
