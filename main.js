@@ -3,6 +3,7 @@ const { Socket } = require("socket.io");
 const path = require("path");
 var cookieParser = require("cookie-parser");
 const { redisConnection, redisStoreKeys } = require("./src/util/redis");
+const { bootKafka, sendMessage } = require("./src/util/kafka");
 
 const app = express();
 app.use(cookieParser());
@@ -68,20 +69,20 @@ app.post("/login", async (req, res) => {
 
 app.post("/message", async (req, res) => {
   // not logged in
-  const userId = req.cookies.userId;
-  const message = req.body.messageBody;
-  const convo = req.body.conversationId;
+  const from = req.cookies.userId;
+  const content = req.body.messageBody;
+  const conversationId = req.body.conversationId;
 
-  if (convo == "MAIN") {
-    io.emit("NEW_MESSAGE", {
-      conversationId: convo,
-      from: userId,
-      content: message,
-    });
-  }
-
+  const message = {
+    conversationId,
+    from,
+    content,
+  };
+  sendMessage(message);
   res.json("OK");
 });
+
+bootKafka(io).catch(console.error);
 
 http.listen(port, () => {
   console.log("listening on port" + port);
