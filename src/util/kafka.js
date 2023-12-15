@@ -24,7 +24,7 @@ const sendMessage = async (message) => {
   });
 };
 
-const bootKafka = async (io, process) => {
+const bootKafka = async (io) => {
   // Connect to Kafka
   await boot();
   // Consume messages
